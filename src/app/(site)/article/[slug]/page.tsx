@@ -10,6 +10,8 @@ import {
 import ArticleCard from "@/components/ArticleCard";
 import AdSlot from "@/components/AdSlot";
 import FlipBookReader from "@/components/FlipBookReader";
+import TableOfContents from "@/components/TableOfContents";
+import { extractTocAndAddIds, splitAtTocMarker } from "@/lib/toc";
 import { SITE_NAME, SITE_URL } from "@/lib/types";
 import { formatDateTime, readingTime, excerptFromHtml } from "@/lib/utils";
 
@@ -70,6 +72,8 @@ export default async function ArticlePage({ params }: Props) {
 
   const related = await getRelatedArticles(article.category_id, article.id, 4);
   const url = `${SITE_URL}/article/${article.slug}`;
+  const { html: contentHtml, toc } = extractTocAndAddIds(article.content);
+  const tocSplit = splitAtTocMarker(contentHtml);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -165,7 +169,7 @@ export default async function ArticlePage({ params }: Props) {
           )}{" "}
           · {formatDateTime(article.published_at)} · {readingTime(article.content)} min read
         </p>
-        <FlipBookReader html={article.content} title={article.title} />
+        <FlipBookReader html={contentHtml} title={article.title} />
       </div>
 
       {article.cover_image_url && (
@@ -181,10 +185,31 @@ export default async function ArticlePage({ params }: Props) {
         </div>
       )}
 
-      <div
-        className="article-body drop-cap"
-        dangerouslySetInnerHTML={{ __html: article.content }}
-      />
+      {tocSplit ? (
+        <>
+          {tocSplit.before.trim() && (
+            <div
+              className="article-body drop-cap"
+              dangerouslySetInnerHTML={{ __html: tocSplit.before }}
+            />
+          )}
+          <TableOfContents items={toc} />
+          {tocSplit.after.trim() && (
+            <div
+              className={`article-body ${!tocSplit.before.trim() ? "drop-cap" : ""}`}
+              dangerouslySetInnerHTML={{ __html: tocSplit.after }}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <TableOfContents items={toc} />
+          <div
+            className="article-body drop-cap"
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          />
+        </>
+      )}
 
       {article.tags?.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t hairline">

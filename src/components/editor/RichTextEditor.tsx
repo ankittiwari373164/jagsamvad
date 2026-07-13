@@ -39,9 +39,11 @@ import {
   FileCode2,
   Superscript as SuperscriptIcon,
   Subscript as SubscriptIcon,
+  TableOfContents as TocIcon,
   Loader2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { TOC_MARKER } from "@/lib/toc";
 
 function ToolbarButton({
   onClick,
@@ -255,6 +257,21 @@ export default function RichTextEditor({
             e.target.value = "";
           }}
         />
+        <ToolbarButton
+          label="Insert Table of Contents here"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .insertContent({
+                type: "paragraph",
+                content: [{ type: "text", text: TOC_MARKER }],
+              })
+              .run()
+          }
+        >
+          <TocIcon size={15} />
+        </ToolbarButton>
         <ToolbarButton
           label="Clear formatting"
           onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
