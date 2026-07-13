@@ -15,6 +15,7 @@ import {
   Italic,
   UnderlineIcon,
   Strikethrough,
+  Pilcrow,
   Heading2,
   Heading3,
   Heading4,
@@ -187,6 +188,13 @@ export default function RichTextEditor({
         </ToolbarButton>
         <ToolbarButton label="Strikethrough" active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()}>
           <Strikethrough size={15} />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Paragraph (normal text)"
+          active={editor.isActive("paragraph")}
+          onClick={() => editor.chain().focus().setParagraph().run()}
+        >
+          <Pilcrow size={15} />
         </ToolbarButton>
         <ToolbarButton label="Heading 2" active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
           <Heading2 size={15} />
