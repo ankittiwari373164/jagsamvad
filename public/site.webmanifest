@@ -1,0 +1,12 @@
+{
+  "name": "Jagsamvad — Bollywood, Hollywood, Korean Movies & OTT News",
+  "short_name": "Jagsamvad",
+  "description": "Daily entertainment newspaper covering Bollywood, Hollywood, Korean cinema and OTT releases.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3eee1",
+  "theme_color": "#8f1d2c",
+  "icons": [
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

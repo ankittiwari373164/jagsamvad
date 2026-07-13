@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #f3eee1;
+  --color-paper-dim: #eae3d2;
+  --color-ink: #201e1a;
+  --color-ink-soft: #4a453c;
+  --color-masthead: #8f1d2c;
+  --color-masthead-dark: #6e1521;
+  --color-gold: #b8912f;
+  --color-rule: #201e1a1f;
+  --color-rule-strong: #201e1a4d;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-masthead: var(--color-masthead);
+  --color-masthead-dark: var(--color-masthead-dark);
+  --color-gold: var(--color-gold);
+  --color-rule: var(--color-rule);
+  --color-rule-strong: var(--color-rule-strong);
+
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-lora), Georgia, serif;
+  --font-mono: var(--font-typewriter), monospace;
+  --font-admin: var(--font-admin), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: var(--color-masthead);
+  color: var(--color-paper);
+}
+
+/* Faint newsprint texture */
+.paper-texture {
+  background-image: radial-gradient(rgba(32, 30, 26, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+.hairline {
+  border-color: var(--color-rule);
+}
+
+.hairline-strong {
+  border-color: var(--color-rule-strong);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 4.2rem;
+  line-height: 0.82;
+  font-weight: 700;
+  padding-right: 0.5rem;
+  padding-top: 0.2rem;
+  color: var(--color-masthead);
+}
+
+/* Article body typography (rendered from the rich-text editor) */
+.article-body {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--color-ink);
+}
+.article-body p {
+  margin-bottom: 1.35em;
+}
+.article-body h2 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 1.6em 0 0.6em;
+}
+.article-body h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 1.4em 0 0.5em;
+}
+.article-body a {
+  color: var(--color-masthead);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.article-body blockquote {
+  border-left: 3px solid var(--color-masthead);
+  padding-left: 1.2rem;
+  font-style: italic;
+  color: var(--color-ink-soft);
+  margin: 1.4em 0;
+}
+.article-body ul, .article-body ol {
+  margin: 0 0 1.3em 1.4em;
+}
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body img {
+  width: 100%;
+  height: auto;
+  margin: 1.6em 0;
+  border: 1px solid var(--color-rule-strong);
+}
+.article-body figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+  margin-top: -1.2em;
+  margin-bottom: 1.6em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Running-text marquee ticker */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-scroll 32s linear infinite;
+}
+.marquee-wrap:hover .marquee-track {
+  animation-play-state: paused;
+}
