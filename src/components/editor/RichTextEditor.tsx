@@ -10,6 +10,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
+import CharacterCount from "@tiptap/extension-character-count";
 import {
   Bold,
   Italic,
@@ -101,6 +102,7 @@ export default function RichTextEditor({
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Subscript,
       Superscript,
+      CharacterCount,
       Placeholder.configure({ placeholder: "Start writing the story…" }),
     ],
     content: value,
@@ -323,6 +325,11 @@ export default function RichTextEditor({
           <EditorContent editor={editor} />
         </div>
       )}
+
+      <div className="flex items-center justify-end gap-4 px-4 py-2 border-t border-slate-200 bg-slate-50 text-xs text-slate-500">
+        <span>{editor.storage.characterCount.words()} words</span>
+        <span>{editor.storage.characterCount.characters()} characters</span>
+      </div>
     </div>
   );
 }
