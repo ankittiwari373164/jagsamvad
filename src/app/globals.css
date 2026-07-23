@@ -110,6 +110,18 @@ body {
 }
 .article-body ul { list-style: disc; }
 .article-body ol { list-style: decimal; }
+.article-body li {
+  margin-bottom: 0.4em;
+}
+.article-body li:last-child {
+  margin-bottom: 0;
+}
+/* Tiptap wraps list-item text in <p>, which was inheriting the full
+   paragraph margin above and making every bullet look double-spaced. */
+.article-body li > p {
+  margin-bottom: 0;
+  display: inline;
+}
 .article-body img {
   width: 100%;
   height: auto;
@@ -123,6 +135,51 @@ body {
   text-align: center;
   margin-top: -1.2em;
   margin-bottom: 1.6em;
+}
+
+/* Raw-HTML Table of Contents box used inside the print-edition flip book
+   (the on-page TOC elsewhere is a real React component, styled separately) */
+.toc-box {
+  border: 1px solid var(--color-rule-strong);
+  background: var(--color-paper-dim);
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.4em;
+}
+.toc-box .toc-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-masthead);
+  margin-bottom: 0.5em;
+}
+.toc-box ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.toc-box li {
+  margin-bottom: 0.35em;
+  font-size: 0.85rem;
+}
+.toc-box a {
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.toc-box a:hover {
+  color: var(--color-masthead);
+  text-decoration: underline;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  scroll-margin-top: 7rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

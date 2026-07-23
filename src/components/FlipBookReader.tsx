@@ -6,7 +6,10 @@ import { ChevronLeft, ChevronRight, X, BookOpen } from "lucide-react";
 
 const HTMLFlipBook = dynamic(() => import("react-pageflip"), { ssr: false }) as unknown as React.ComponentType<Record<string, unknown>>;
 
-const CHARS_PER_PAGE = 950;
+// Kept deliberately small so a page's content always fits without needing
+// to scroll inside it — more, shorter pages beats a few pages you have to
+// scroll through.
+const CHARS_PER_PAGE = 480;
 
 function paginate(html: string): string[] {
   if (typeof window === "undefined") return [html];
@@ -33,30 +36,39 @@ function paginate(html: string): string[] {
   return pages.length ? pages : [html];
 }
 
-const Page = forwardRef<HTMLDivElement, { html: string; pageNumber: number; title: string }>(
-  function Page({ html, pageNumber, title }, ref) {
-    return (
+const Page = forwardRef<
+  HTMLDivElement,
+  { html: string; pageNumber: number; totalPages: number; title: string; edge: "left" | "right" }
+>(function Page({ html, pageNumber, totalPages, title, edge }, ref) {
+  return (
+    <div
+      ref={ref}
+      className="relative bg-paper paper-texture flex flex-col h-full overflow-hidden"
+    >
+      {/* Book-spine shadow, closest to the fold */}
       <div
-        ref={ref}
-        className="bg-paper paper-texture border hairline-strong flex flex-col h-full"
-      >
-        <div className="flex items-center justify-between px-6 sm:px-10 pt-5 pb-3 border-b hairline">
-          <span className="eyebrow text-[10px] text-masthead font-bold truncate pr-4">
-            {title}
-          </span>
-          <span className="eyebrow text-[10px] text-ink-soft">Jagsamvad</span>
-        </div>
-        <div
-          className="article-body flex-1 overflow-hidden px-6 sm:px-10 py-5 text-[0.95rem] sm:text-base leading-relaxed columns-1"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-        <div className="eyebrow text-[10px] text-ink-soft text-center pb-4">
-          — {pageNumber} —
-        </div>
+        className={`pointer-events-none absolute inset-y-0 w-10 z-10 ${
+          edge === "right"
+            ? "left-0 bg-gradient-to-r from-black/15 to-transparent"
+            : "right-0 bg-gradient-to-l from-black/15 to-transparent"
+        }`}
+      />
+      <div className="flex items-center justify-between px-5 sm:px-8 pt-4 pb-2.5 border-b hairline">
+        <span className="eyebrow text-[9px] text-masthead font-bold truncate pr-4">
+          {title}
+        </span>
+        <span className="eyebrow text-[9px] text-ink-soft shrink-0">Jagsamvad</span>
       </div>
-    );
-  }
-);
+      <div
+        className="article-body flex-1 overflow-hidden px-5 sm:px-8 py-4 text-[0.85rem] sm:text-[0.92rem] leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <div className="eyebrow text-[9px] text-ink-soft text-center pb-3 pt-1 border-t hairline">
+        Page {pageNumber} of {totalPages}
+      </div>
+    </div>
+  );
+});
 
 export default function FlipBookReader({
   html,
@@ -80,40 +92,47 @@ export default function FlipBookReader({
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 bg-ink/90 flex flex-col items-center justify-center p-3 sm:p-8">
+        <div className="fixed inset-0 z-50 bg-gradient-to-b from-ink to-[#100f0d] flex flex-col items-center justify-center p-3 sm:p-8">
           <button
             aria-label="Close print edition"
             onClick={() => setOpen(false)}
-            className="absolute top-4 right-4 text-paper hover:text-gold p-2"
+            className="absolute top-4 right-4 text-paper hover:text-gold bg-white/10 hover:bg-white/15 rounded-full p-2 transition-colors"
           >
-            <X size={26} />
+            <X size={22} />
           </button>
 
-          <div className="w-full max-w-4xl h-[75vh] sm:h-[80vh] flex items-center justify-center gap-2">
+          <div className="w-full max-w-4xl h-[78vh] sm:h-[82vh] flex items-center justify-center gap-2">
             <button
               aria-label="Previous page"
               onClick={() => bookRef.current?.pageFlip().flipPrev()}
-              className="hidden sm:flex text-paper hover:text-gold p-2 shrink-0"
+              className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-paper transition-colors shrink-0"
             >
-              <ChevronLeft size={32} />
+              <ChevronLeft size={24} />
             </button>
 
             <div className="h-full w-full max-w-3xl">
               <HTMLFlipBook
                 width={420}
-                height={600}
+                height={640}
                 size="stretch"
                 minWidth={280}
                 maxWidth={600}
-                minHeight={420}
-                maxHeight={780}
+                minHeight={440}
+                maxHeight={820}
                 showCover={false}
-                mobileScrollSupport
-                className="mx-auto shadow-2xl"
+                mobileScrollSupport={false}
+                className="mx-auto shadow-2xl rounded-sm overflow-hidden"
                 ref={bookRef}
               >
                 {pages.map((pageHtml, i) => (
-                  <Page key={i} html={pageHtml} pageNumber={i + 1} title={title} />
+                  <Page
+                    key={i}
+                    html={pageHtml}
+                    pageNumber={i + 1}
+                    totalPages={pages.length}
+                    title={title}
+                    edge={i % 2 === 0 ? "right" : "left"}
+                  />
                 ))}
               </HTMLFlipBook>
             </div>
@@ -121,9 +140,9 @@ export default function FlipBookReader({
             <button
               aria-label="Next page"
               onClick={() => bookRef.current?.pageFlip().flipNext()}
-              className="hidden sm:flex text-paper hover:text-gold p-2 shrink-0"
+              className="hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-paper transition-colors shrink-0"
             >
-              <ChevronRight size={32} />
+              <ChevronRight size={24} />
             </button>
           </div>
 

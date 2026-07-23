@@ -71,3 +71,44 @@ export function splitAtTocMarker(html: string): { before: string; after: string 
 
   return null;
 }
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/**
+ * Renders a Table of Contents as a raw HTML string (with the `.toc-box`
+ * styling defined in globals.css). Used for contexts that can't render a
+ * React component inline — namely the flip-book print edition, which
+ * paginates raw HTML strings.
+ */
+export function renderTocHtml(toc: TocItem[]): string {
+  if (toc.length < 2) return "";
+  const items = toc
+    .map(
+      (item) =>
+        `<li style="margin-left:${(item.level - 2) * 16}px"><a href="#${item.id}">${escapeHtml(item.text)}</a></li>`
+    )
+    .join("");
+  return `<div class="toc-box"><p class="toc-label">In This Article</p><ol>${items}</ol></div>`;
+}
+
+/**
+ * Prepares article HTML for a raw-HTML rendering context (the flip-book):
+ * replaces the `[[TOC]]` marker with an actual rendered Table of Contents,
+ * or — if no marker was placed — prepends the TOC before the content.
+ * Guarantees the literal marker text never leaks into the output.
+ */
+export function prepareHtmlWithToc(html: string, toc: TocItem[]): string {
+  const tocHtml = renderTocHtml(toc);
+  const split = splitAtTocMarker(html);
+
+  if (split) {
+    return `${split.before}${tocHtml}${split.after}`;
+  }
+  return tocHtml ? `${tocHtml}${html}` : html;
+}

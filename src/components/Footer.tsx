@@ -19,8 +19,8 @@ export default async function Footer() {
   const colB = categories.slice(mid);
 
   return (
-    <footer className="bg-ink text-paper mt-16 paper-texture">
-      <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-4 gap-10">
+    <footer className="bg-ink text-paper mt-12 paper-texture">
+      <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-4 gap-8">
         <div>
           <h2 className="font-display text-2xl font-bold">जगसंवाद</h2>
           <p className="text-xs text-gold eyebrow mt-0.5">JagSamvad</p>
@@ -88,7 +88,7 @@ export default async function Footer() {
       </div>
 
       <div className="border-t border-paper/15">
-        <div className="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-paper/60 eyebrow">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-paper/60 eyebrow">
           <p>© {new Date().getFullYear()} Jagsamvad. All rights reserved.</p>
           <p className="flex items-center gap-1.5">
             Made with <Heart size={11} className="fill-masthead text-masthead" /> for news lovers

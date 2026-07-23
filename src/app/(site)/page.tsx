@@ -57,7 +57,7 @@ export default async function HomePage() {
             <ArticleCard article={lead} size="lead" />
           </div>
           {trending.length > 0 && (
-            <aside>
+            <aside className="lg:sticky lg:top-24 lg:self-start">
               <h2 className="eyebrow text-xs text-masthead font-bold border-b hairline pb-2 mb-4">
                 Trending Now
               </h2>
@@ -113,7 +113,7 @@ export default async function HomePage() {
             )}
           </div>
 
-          <aside className="space-y-8">
+          <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
             <EditorsPickCarousel articles={editorsPick} />
             <SidebarQuickLinks />
             <NewsletterForm />
