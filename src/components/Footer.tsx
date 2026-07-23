@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { getCategories } from "@/lib/data";
+import { SOCIAL_LINKS } from "@/lib/types";
 import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon } from "@/components/SocialIcons";
 
 const legalLinks = [
@@ -29,16 +30,16 @@ export default async function Footer() {
             Korean and everything in between.
           </p>
           <div className="flex items-center gap-4 mt-4 text-paper/80">
-            <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors">
+            <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-gold transition-colors">
               <FacebookIcon size={16} />
             </a>
-            <a href="#" aria-label="X (Twitter)" className="hover:text-gold transition-colors">
+            <a href={SOCIAL_LINKS.x} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-gold transition-colors">
               <XIcon size={15} />
             </a>
-            <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors">
+            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-gold transition-colors">
               <InstagramIcon size={16} />
             </a>
-            <a href="#" aria-label="YouTube" className="hover:text-gold transition-colors">
+            <a href={SOCIAL_LINKS.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-gold transition-colors">
               <YoutubeIcon size={17} />
             </a>
           </div>

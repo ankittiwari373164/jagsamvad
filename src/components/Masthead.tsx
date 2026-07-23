@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { getCategories } from "@/lib/data";
-import { SITE_LOCATION, SITE_TAGLINE } from "@/lib/types";
+import { SITE_LOCATION, SITE_TAGLINE, SOCIAL_LINKS } from "@/lib/types";
 import MobileNav from "@/components/MobileNav";
 import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon } from "@/components/SocialIcons";
 
@@ -32,16 +32,16 @@ export default async function Masthead() {
             </Link>
           </nav>
           <div className="flex items-center gap-3 text-ink-soft border-l hairline pl-4">
-            <a href="#" aria-label="Facebook" className="hover:text-masthead transition-colors">
+            <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-masthead transition-colors">
               <FacebookIcon size={13} />
             </a>
-            <a href="#" aria-label="X (Twitter)" className="hover:text-masthead transition-colors">
+            <a href={SOCIAL_LINKS.x} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-masthead transition-colors">
               <XIcon size={12} />
             </a>
-            <a href="#" aria-label="Instagram" className="hover:text-masthead transition-colors">
+            <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-masthead transition-colors">
               <InstagramIcon size={13} />
             </a>
-            <a href="#" aria-label="YouTube" className="hover:text-masthead transition-colors">
+            <a href={SOCIAL_LINKS.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-masthead transition-colors">
               <YoutubeIcon size={14} />
             </a>
           </div>

@@ -51,7 +51,7 @@ export default async function HomePage() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Hero: lead + trending */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10 border-b hairline-strong">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10 border-b hairline-strong items-start">
           <div className="lg:col-span-2">
             <ArticleCard article={lead} size="lead" />
           </div>
@@ -96,7 +96,7 @@ export default async function HomePage() {
         </section>
 
         {/* Entertainment + sidebar (Editor's Pick / Quick Links / Newsletter) */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-10 py-10 border-b hairline-strong">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-10 py-10 border-b hairline-strong items-start">
           <div className="lg:col-span-2">
             {entertainment.length > 0 && (
               <>

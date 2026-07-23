@@ -47,6 +47,13 @@ export type ArticleWithRelations = Article & {
 export const SITE_NAME = "Jagsamvad";
 export const SITE_TAGLINE = "जहाँ की बात, हर पल की खबर";
 export const SITE_LOCATION = "New Delhi, India";
+export const SOCIAL_LINKS = {
+  x: "https://x.com/jagsamvad6?s=20",
+  youtube: "https://www.youtube.com/@jagsamvad",
+  instagram: "https://www.instagram.com/jagsamvad",
+  facebook: "https://www.facebook.com/profile.php?id=61573436353502",
+};
+
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
   "https://www.jagsamvad.com";

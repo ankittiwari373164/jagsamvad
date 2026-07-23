@@ -13,6 +13,7 @@ import FlipBookReader from "@/components/FlipBookReader";
 import TableOfContents from "@/components/TableOfContents";
 import AuthorCard from "@/components/AuthorCard";
 import ShareButtons from "@/components/ShareButtons";
+import NewsletterForm from "@/components/NewsletterForm";
 import { extractTocAndAddIds, splitAtTocMarker, prepareHtmlWithToc } from "@/lib/toc";
 import { SITE_NAME, SITE_URL } from "@/lib/types";
 import { formatDateTime, readingTime, excerptFromHtml } from "@/lib/utils";
@@ -126,7 +127,7 @@ export default async function ArticlePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
         {/* Main column */}
         <article className="lg:col-span-2 min-w-0">
           <nav className="eyebrow text-[11px] text-ink-soft mb-4">
@@ -241,20 +242,23 @@ export default async function ArticlePage({ params }: Props) {
 
           <AdSlot />
 
-          {related.length > 0 && (
-            <div className="border hairline-strong bg-white p-5">
-              <p className="eyebrow text-[10px] text-masthead font-bold mb-4">
-                More Like This
-              </p>
-              <div className="space-y-5">
-                {related.map((a) => (
-                  <ArticleCard key={a.id} article={a} size="compact" />
-                ))}
-              </div>
-            </div>
-          )}
+          <NewsletterForm />
         </aside>
       </div>
+
+      {/* Related articles — full width, bottom of page */}
+      {related.length > 0 && (
+        <section className="mt-12 pt-8 border-t hairline-strong">
+          <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
+            <h2 className="font-display text-2xl font-bold">Related Articles</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+            {related.map((a) => (
+              <ArticleCard key={a.id} article={a} size="regular" />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

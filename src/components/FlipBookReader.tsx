@@ -7,45 +7,72 @@ import { ChevronLeft, ChevronRight, X, BookOpen } from "lucide-react";
 
 const HTMLFlipBook = dynamic(() => import("react-pageflip"), { ssr: false }) as unknown as React.ComponentType<Record<string, unknown>>;
 
-// Kept deliberately small so a page's content always fits without needing
-// to scroll inside it — more, shorter pages beats a few pages you have to
-// scroll through.
-const CHARS_PER_PAGE = 420;
+// Must match the Page component's actual rendered dimensions below —
+// pagination measures against these so pages are filled properly instead
+// of guessed from character counts.
+const PAGE_WIDTH = 420;
+const PAGE_HEIGHT = 640;
+const CONTENT_HORIZONTAL_PADDING = 64; // px-8 on both sides
+const CONTENT_HEIGHT = 480; // available height for body content, chrome (header/footer/padding) subtracted with margin
 
+function serialize(elements: Element[]): string {
+  return elements.map((el) => el.outerHTML).join("");
+}
+
+/**
+ * Paginates by actually rendering candidate content into a hidden,
+ * identically-styled measuring element and checking its real height —
+ * rather than estimating from character counts, which either wastes
+ * space (way under-filled pages) or clips content (overflow). This is
+ * what makes pages behave like an actual book.
+ */
 function paginate(html: string): string[] {
   if (typeof window === "undefined") return [html];
-  const container = document.createElement("div");
-  container.innerHTML = html;
-  const nodes = Array.from(container.children);
 
-  const pages: string[] = [];
-  let current = "";
-  let currentLen = 0;
+  const measurer = document.createElement("div");
+  measurer.className = "article-body";
+  Object.assign(measurer.style, {
+    position: "fixed",
+    visibility: "hidden",
+    pointerEvents: "none",
+    top: "-9999px",
+    left: "-9999px",
+    width: `${PAGE_WIDTH - CONTENT_HORIZONTAL_PADDING}px`,
+    fontSize: "0.92rem",
+  });
+  document.body.appendChild(measurer);
 
-  const flush = () => {
-    if (current) pages.push(current);
-    current = "";
-    currentLen = 0;
+  const measure = (elements: Element[]) => {
+    measurer.innerHTML = serialize(elements);
+    return measurer.scrollHeight;
   };
 
+  const source = document.createElement("div");
+  source.innerHTML = html;
+  const nodes = Array.from(source.children);
+
+  const pages: string[] = [];
+  let current: Element[] = [];
+
   for (const node of nodes) {
-    const hasImage = node.tagName === "IMG" || !!node.querySelector("img");
-    const chunk = node.outerHTML;
-    const len = node.textContent?.length ?? 0;
-
-    // Images are unpredictable in height, so always give them a fresh
-    // page rather than risk them overflowing a page shared with text.
-    if (hasImage && currentLen > 0) flush();
-
-    if (!hasImage && currentLen > 0 && currentLen + len > CHARS_PER_PAGE) flush();
-
-    current += chunk;
-    currentLen += len;
-
-    if (hasImage) flush();
+    const trial = [...current, node];
+    if (current.length > 0 && measure(trial) > CONTENT_HEIGHT) {
+      pages.push(serialize(current));
+      current = [node];
+    } else {
+      current = trial;
+    }
+    // A single node that alone doesn't fit (e.g. a large image) gets its
+    // own page immediately, rather than waiting for a sibling to trigger
+    // the overflow check above.
+    if (current.length === 1 && measure(current) > CONTENT_HEIGHT) {
+      pages.push(serialize(current));
+      current = [];
+    }
   }
-  flush();
+  if (current.length > 0) pages.push(serialize(current));
 
+  document.body.removeChild(measurer);
   return pages.length ? pages : [html];
 }
 
@@ -73,7 +100,7 @@ const Page = forwardRef<
         <span className="eyebrow text-[9px] text-ink-soft shrink-0">Jagsamvad</span>
       </div>
       <div
-        className="article-body flex-1 overflow-hidden px-5 sm:px-8 py-4 text-[0.85rem] sm:text-[0.92rem] leading-relaxed"
+        className="article-body flex-1 overflow-hidden px-5 sm:px-8 py-4 text-[0.85rem] sm:text-[0.92rem]"
         dangerouslySetInnerHTML={{ __html: html }}
       />
       <div className="eyebrow text-[9px] text-ink-soft text-center pb-3 pt-1 border-t hairline">
@@ -136,8 +163,8 @@ export default function FlipBookReader({
 
         <div className="h-full w-full max-w-3xl">
           <HTMLFlipBook
-            width={420}
-            height={640}
+            width={PAGE_WIDTH}
+            height={PAGE_HEIGHT}
             size="stretch"
             minWidth={280}
             maxWidth={600}
