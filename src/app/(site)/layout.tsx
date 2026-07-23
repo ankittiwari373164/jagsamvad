@@ -1,6 +1,7 @@
 import Masthead from "@/components/Masthead";
 import Footer from "@/components/Footer";
 import PageFlipTransition from "@/components/PageFlipTransition";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export default function SiteLayout({
   children,
@@ -18,6 +19,14 @@ export default function SiteLayout({
         <PageFlipTransition>{children}</PageFlipTransition>
       </main>
       <Footer />
+
+      {/* Only loads once you set a real GA4 measurement ID — never ships
+          a fake/placeholder tracking ID. Deliberately scoped to the
+          public site layout so your own admin-panel activity is never
+          counted in the analytics. */}
+      {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+      )}
     </>
   );
 }
