@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { getPublishedArticles } from "@/lib/data";
 import ArticleCard from "@/components/ArticleCard";
-import AdSlot from "@/components/AdSlot";
 import MarqueeTicker from "@/components/MarqueeTicker";
 import EditorsPickCarousel from "@/components/EditorsPickCarousel";
 import SidebarQuickLinks from "@/components/SidebarQuickLinks";
@@ -57,7 +56,7 @@ export default async function HomePage() {
             <ArticleCard article={lead} size="lead" />
           </div>
           {trending.length > 0 && (
-            <aside className="lg:sticky lg:top-24 lg:self-start">
+            <aside>
               <h2 className="eyebrow text-xs text-masthead font-bold border-b hairline pb-2 mb-4">
                 Trending Now
               </h2>
@@ -113,14 +112,12 @@ export default async function HomePage() {
             )}
           </div>
 
-          <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
+          <aside className="space-y-8">
             <EditorsPickCarousel articles={editorsPick} />
             <SidebarQuickLinks />
             <NewsletterForm />
           </aside>
         </section>
-
-        <AdSlot />
 
         {/* Latest news */}
         {latestNews.length > 0 && (

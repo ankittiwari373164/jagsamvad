@@ -236,7 +236,7 @@ export default async function ArticlePage({ params }: Props) {
         </article>
 
         {/* Sidebar */}
-        <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
+        <aside className="space-y-8">
           {article.author && <AuthorCard author={article.author} />}
 
           <AdSlot />
