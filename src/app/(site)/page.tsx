@@ -77,9 +77,9 @@ export default async function HomePage() {
                 <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
                   <h2 className="font-display text-2xl font-bold">Latest News</h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                   {latestNews.map((a) => (
-                    <ArticleCard key={a.id} article={a} size="regular" />
+                    <ArticleCard key={a.id} article={a} size="horizontal" />
                   ))}
                 </div>
               </div>

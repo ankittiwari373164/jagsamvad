@@ -8,7 +8,7 @@ export default function ArticleCard({
   size = "regular",
 }: {
   article: ArticleWithRelations;
-  size?: "lead" | "regular" | "compact";
+  size?: "lead" | "regular" | "horizontal" | "compact";
 }) {
   const href = `/article/${article.slug}`;
 
@@ -43,12 +43,14 @@ export default function ArticleCard({
         {article.excerpt && (
           <p className="text-ink-soft leading-relaxed mb-3">{article.excerpt}</p>
         )}
-        <Link href={href} className="text-sm font-semibold text-masthead hover:underline">
-          Read More →
-        </Link>
-        <p className="eyebrow text-[11px] text-ink-soft mt-3">
-          {formatDate(article.published_at)} · {readingTime(article.content)} min read
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <Link href={href} className="text-sm font-semibold text-masthead hover:underline">
+            Read More →
+          </Link>
+          <p className="eyebrow text-[11px] text-ink-soft whitespace-nowrap">
+            {formatDate(article.published_at)} · {readingTime(article.content)} min read
+          </p>
+        </div>
       </article>
     );
   }
@@ -71,6 +73,39 @@ export default function ArticleCard({
             </Link>
           </h3>
           <p className="text-xs text-ink-soft mt-1">{formatDate(article.published_at)}</p>
+        </div>
+      </article>
+    );
+  }
+
+  if (size === "horizontal") {
+    return (
+      <article className="flex gap-4">
+        {article.cover_image_url && (
+          <Link href={href} className="relative w-28 h-24 sm:w-32 sm:h-28 shrink-0 border hairline overflow-hidden">
+            <Image src={article.cover_image_url} alt={article.title} fill sizes="128px" className="object-cover" />
+          </Link>
+        )}
+        <div className="min-w-0 flex-1">
+          {article.category && (
+            <Link
+              href={`/category/${article.category.slug}`}
+              className="eyebrow text-[10px] text-masthead font-bold hover:underline"
+            >
+              {article.category.name}
+            </Link>
+          )}
+          <h3 className="font-display text-base sm:text-lg font-bold leading-snug mt-1 mb-1.5">
+            <Link href={href} className="hover:underline">
+              {article.title}
+            </Link>
+          </h3>
+          {article.excerpt && (
+            <p className="text-sm text-ink-soft leading-relaxed line-clamp-2 mb-1.5">{article.excerpt}</p>
+          )}
+          <p className="eyebrow text-[10px] text-ink-soft">
+            {formatDate(article.published_at)} · {readingTime(article.content)} min read
+          </p>
         </div>
       </article>
     );
@@ -105,12 +140,14 @@ export default function ArticleCard({
       {article.excerpt && (
         <p className="text-sm text-ink-soft leading-relaxed line-clamp-3 mb-2">{article.excerpt}</p>
       )}
-      <Link href={href} className="text-sm font-semibold text-masthead hover:underline">
-        Read More →
-      </Link>
-      <p className="eyebrow text-[10px] text-ink-soft mt-2">
-        {formatDate(article.published_at)} · {readingTime(article.content)} min read
-      </p>
+      <div className="flex items-center justify-between gap-3">
+        <Link href={href} className="text-sm font-semibold text-masthead hover:underline">
+          Read More →
+        </Link>
+        <p className="eyebrow text-[10px] text-ink-soft whitespace-nowrap">
+          {formatDate(article.published_at)} · {readingTime(article.content)} min read
+        </p>
+      </div>
     </article>
   );
 }
