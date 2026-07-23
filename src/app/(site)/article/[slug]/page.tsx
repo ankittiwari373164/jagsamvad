@@ -234,6 +234,28 @@ export default async function ArticlePage({ params }: Props) {
               ))}
             </div>
           )}
+
+          <div className="mt-8 border hairline-strong bg-paper-dim px-5 py-4">
+            <p className="eyebrow text-[10px] text-masthead font-bold mb-2">
+              About This Article
+            </p>
+            <p className="text-sm text-ink-soft leading-relaxed">
+              Written by{" "}
+              <span className="text-ink font-semibold">
+                {article.author?.name ?? "Jagsamvad Desk"}
+              </span>
+              . Published {formatDateTime(article.published_at)}. Spot an
+              error?{" "}
+              <Link href="/contact" className="text-masthead hover:underline">
+                Contact us
+              </Link>{" "}
+              and we&rsquo;ll correct it per our{" "}
+              <Link href="/editorial-policy" className="text-masthead hover:underline">
+                editorial policy
+              </Link>
+              .
+            </p>
+          </div>
         </article>
 
         {/* Sidebar */}
@@ -250,7 +272,7 @@ export default async function ArticlePage({ params }: Props) {
       {related.length > 0 && (
         <section className="mt-12 pt-8 border-t hairline-strong">
           <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
-            <h2 className="font-display text-2xl font-bold">Related Articles</h2>
+            <h2 className="font-display text-2xl font-bold">You May Also Like</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
             {related.map((a) => (

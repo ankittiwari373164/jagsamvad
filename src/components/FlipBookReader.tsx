@@ -13,7 +13,10 @@ const HTMLFlipBook = dynamic(() => import("react-pageflip"), { ssr: false }) as 
 const PAGE_WIDTH = 420;
 const PAGE_HEIGHT = 640;
 const CONTENT_HORIZONTAL_PADDING = 64; // px-8 on both sides
-const CONTENT_HEIGHT = 480; // available height for body content, chrome (header/footer/padding) subtracted with margin
+// Real header+footer chrome measures ~64px, leaving ~576px available;
+// using 540px keeps a safety margin for font-rendering variance across
+// browsers while still filling pages properly.
+const CONTENT_HEIGHT = 540;
 
 function serialize(elements: Element[]): string {
   return elements.map((el) => el.outerHTML).join("");
@@ -119,6 +122,7 @@ export default function FlipBookReader({
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scale, setScale] = useState(1);
   const pages = useMemo(() => paginate(html), [html]);
   const bookRef = useRef<{ pageFlip: () => { flipNext: () => void; flipPrev: () => void } } | null>(null);
 
@@ -128,6 +132,25 @@ export default function FlipBookReader({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
+
+  // The book renders at a fixed pixel size (matching exactly what
+  // pagination measured against, so nothing is ever clipped) and is then
+  // scaled down uniformly via CSS transform to fit smaller screens —
+  // scaling never changes what actually fits on a page, unlike resizing.
+  useEffect(() => {
+    if (!open) return;
+    const updateScale = () => {
+      const availableWidth = window.innerWidth - 96; // modal padding + nav buttons
+      const availableHeight = window.innerHeight * 0.78 - 64;
+      const bookWidth = PAGE_WIDTH * 2; // two-page spread
+      const scaleX = availableWidth / bookWidth;
+      const scaleY = availableHeight / PAGE_HEIGHT;
+      setScale(Math.min(1, scaleX, scaleY));
+    };
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, [open]);
 
   // Lock background scroll while the overlay is open, and always start
   // back at the top of the viewport rather than wherever the underlying
@@ -161,31 +184,32 @@ export default function FlipBookReader({
           <ChevronLeft size={24} />
         </button>
 
-        <div className="h-full w-full max-w-3xl">
-          <HTMLFlipBook
-            width={PAGE_WIDTH}
-            height={PAGE_HEIGHT}
-            size="stretch"
-            minWidth={280}
-            maxWidth={600}
-            minHeight={440}
-            maxHeight={820}
-            showCover={false}
-            mobileScrollSupport={false}
-            className="mx-auto shadow-2xl rounded-sm overflow-hidden"
-            ref={bookRef}
-          >
-            {pages.map((pageHtml, i) => (
-              <Page
-                key={i}
-                html={pageHtml}
-                pageNumber={i + 1}
-                totalPages={pages.length}
-                title={title}
-                edge={i % 2 === 0 ? "right" : "left"}
-              />
-            ))}
-          </HTMLFlipBook>
+        <div
+          className="h-full w-full max-w-3xl flex items-center justify-center"
+          style={{ overflow: "visible" }}
+        >
+          <div style={{ transform: `scale(${scale})`, transformOrigin: "center" }}>
+            <HTMLFlipBook
+              width={PAGE_WIDTH}
+              height={PAGE_HEIGHT}
+              size="fixed"
+              showCover={false}
+              mobileScrollSupport={false}
+              className="shadow-2xl rounded-sm overflow-hidden"
+              ref={bookRef}
+            >
+              {pages.map((pageHtml, i) => (
+                <Page
+                  key={i}
+                  html={pageHtml}
+                  pageNumber={i + 1}
+                  totalPages={pages.length}
+                  title={title}
+                  edge={i % 2 === 0 ? "right" : "left"}
+                />
+              ))}
+            </HTMLFlipBook>
+          </div>
         </div>
 
         <button
