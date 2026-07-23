@@ -1,7 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
+import { Send, MessageCircle } from "lucide-react";
 import { subscribeNewsletter, type NewsletterState } from "@/app/actions/newsletter";
+import { SOCIAL_LINKS } from "@/lib/types";
 
 const initialState: NewsletterState = { status: "idle" };
 
@@ -40,6 +42,27 @@ export default function NewsletterForm() {
           {state.message}
         </p>
       )}
+
+      <div className="flex flex-col gap-2 mt-4 pt-4 border-t hairline">
+        <a
+          href={SOCIAL_LINKS.telegram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#229ED9] hover:bg-[#1c86ba] px-4 py-2.5 transition-colors"
+        >
+          <Send size={14} />
+          Join on Telegram
+        </a>
+        <a
+          href={SOCIAL_LINKS.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#25D366] hover:bg-[#1fb457] px-4 py-2.5 transition-colors"
+        >
+          <MessageCircle size={14} />
+          Join on WhatsApp
+        </a>
+      </div>
     </div>
   );
 }

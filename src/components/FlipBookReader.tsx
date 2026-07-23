@@ -7,16 +7,9 @@ import { ChevronLeft, ChevronRight, X, BookOpen } from "lucide-react";
 
 const HTMLFlipBook = dynamic(() => import("react-pageflip"), { ssr: false }) as unknown as React.ComponentType<Record<string, unknown>>;
 
-// Must match the Page component's actual rendered dimensions below —
-// pagination measures against these so pages are filled properly instead
-// of guessed from character counts.
-const PAGE_WIDTH = 420;
-const PAGE_HEIGHT = 640;
-const CONTENT_HORIZONTAL_PADDING = 64; // px-8 on both sides
-// Real header+footer chrome measures ~64px, leaving ~576px available;
-// using 540px keeps a safety margin for font-rendering variance across
-// browsers while still filling pages properly.
-const CONTENT_HEIGHT = 540;
+const CONTENT_HORIZONTAL_PADDING = 64; // px-8 on both sides of each page
+const CHROME_HEIGHT = 64; // measured header + footer strip height on each page
+const SAFETY_MARGIN = 24;
 
 function serialize(elements: Element[]): string {
   return elements.map((el) => el.outerHTML).join("");
@@ -24,13 +17,16 @@ function serialize(elements: Element[]): string {
 
 /**
  * Paginates by actually rendering candidate content into a hidden,
- * identically-styled measuring element and checking its real height —
- * rather than estimating from character counts, which either wastes
- * space (way under-filled pages) or clips content (overflow). This is
- * what makes pages behave like an actual book.
+ * identically-styled measuring element sized to the *real* page dimensions
+ * (passed in, not guessed) and checking its real height. Because the book
+ * is later rendered at these exact same dimensions, nothing can ever be
+ * clipped or wildly under-filled.
  */
-function paginate(html: string): string[] {
+function paginate(html: string, pageWidth: number, pageHeight: number): string[] {
   if (typeof window === "undefined") return [html];
+
+  const contentWidth = pageWidth - CONTENT_HORIZONTAL_PADDING;
+  const contentHeight = pageHeight - CHROME_HEIGHT - SAFETY_MARGIN;
 
   const measurer = document.createElement("div");
   measurer.className = "article-body";
@@ -40,7 +36,7 @@ function paginate(html: string): string[] {
     pointerEvents: "none",
     top: "-9999px",
     left: "-9999px",
-    width: `${PAGE_WIDTH - CONTENT_HORIZONTAL_PADDING}px`,
+    width: `${contentWidth}px`,
     fontSize: "0.92rem",
   });
   document.body.appendChild(measurer);
@@ -59,16 +55,13 @@ function paginate(html: string): string[] {
 
   for (const node of nodes) {
     const trial = [...current, node];
-    if (current.length > 0 && measure(trial) > CONTENT_HEIGHT) {
+    if (current.length > 0 && measure(trial) > contentHeight) {
       pages.push(serialize(current));
       current = [node];
     } else {
       current = trial;
     }
-    // A single node that alone doesn't fit (e.g. a large image) gets its
-    // own page immediately, rather than waiting for a sibling to trigger
-    // the overflow check above.
-    if (current.length === 1 && measure(current) > CONTENT_HEIGHT) {
+    if (current.length === 1 && measure(current) > contentHeight) {
       pages.push(serialize(current));
       current = [];
     }
@@ -88,7 +81,6 @@ const Page = forwardRef<
       ref={ref}
       className="relative bg-paper paper-texture flex flex-col h-full overflow-hidden"
     >
-      {/* Book-spine shadow, closest to the fold */}
       <div
         className={`pointer-events-none absolute inset-y-0 w-10 z-10 ${
           edge === "right"
@@ -122,8 +114,8 @@ export default function FlipBookReader({
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [scale, setScale] = useState(1);
-  const pages = useMemo(() => paginate(html), [html]);
+  const [pageDims, setPageDims] = useState<{ width: number; height: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<{ pageFlip: () => { flipNext: () => void; flipPrev: () => void } } | null>(null);
 
   useEffect(() => {
@@ -133,24 +125,39 @@ export default function FlipBookReader({
     setMounted(true);
   }, []);
 
-  // The book renders at a fixed pixel size (matching exactly what
-  // pagination measured against, so nothing is ever clipped) and is then
-  // scaled down uniformly via CSS transform to fit smaller screens —
-  // scaling never changes what actually fits on a page, unlike resizing.
+  // Measure the actual available space for the book (a two-page spread)
+  // once the modal has laid out, and size the book to fill it — this is
+  // what makes it appear "zoomed"/large rather than a small fixed card,
+  // and since pagination below uses these exact same numbers, nothing
+  // that fits in this space can ever get clipped.
   useEffect(() => {
-    if (!open) return;
-    const updateScale = () => {
-      const availableWidth = window.innerWidth - 96; // modal padding + nav buttons
-      const availableHeight = window.innerHeight * 0.78 - 64;
-      const bookWidth = PAGE_WIDTH * 2; // two-page spread
-      const scaleX = availableWidth / bookWidth;
-      const scaleY = availableHeight / PAGE_HEIGHT;
-      setScale(Math.min(1, scaleX, scaleY));
+    if (!open) {
+      // Reset measurement state when the modal closes so it re-measures
+      // fresh next time it opens, rather than reusing stale dimensions.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPageDims(null);
+      return;
+    }
+    const updateDims = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const width = Math.max(240, Math.floor(rect.width / 2));
+      const height = Math.max(340, Math.floor(rect.height));
+      setPageDims({ width, height });
     };
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
+    const raf = requestAnimationFrame(updateDims);
+    window.addEventListener("resize", updateDims);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", updateDims);
+    };
   }, [open]);
+
+  const pages = useMemo(() => {
+    if (!pageDims) return [];
+    return paginate(html, pageDims.width, pageDims.height);
+  }, [html, pageDims]);
 
   // Lock background scroll while the overlay is open, and always start
   // back at the top of the viewport rather than wherever the underlying
@@ -175,7 +182,7 @@ export default function FlipBookReader({
         <X size={22} />
       </button>
 
-      <div className="w-full max-w-4xl h-[78vh] sm:h-[82vh] flex items-center justify-center gap-2">
+      <div className="w-full max-w-5xl h-[80vh] sm:h-[85vh] flex items-center justify-center gap-2">
         <button
           aria-label="Previous page"
           onClick={() => bookRef.current?.pageFlip().flipPrev()}
@@ -184,15 +191,13 @@ export default function FlipBookReader({
           <ChevronLeft size={24} />
         </button>
 
-        <div
-          className="h-full w-full max-w-3xl flex items-center justify-center"
-          style={{ overflow: "visible" }}
-        >
-          <div style={{ transform: `scale(${scale})`, transformOrigin: "center" }}>
+        <div ref={containerRef} className="h-full w-full flex items-center justify-center">
+          {pageDims && pages.length > 0 && (
             <HTMLFlipBook
-              width={PAGE_WIDTH}
-              height={PAGE_HEIGHT}
+              width={pageDims.width}
+              height={pageDims.height}
               size="fixed"
+              usePortrait={false}
               showCover={false}
               mobileScrollSupport={false}
               className="shadow-2xl rounded-sm overflow-hidden"
@@ -209,7 +214,7 @@ export default function FlipBookReader({
                 />
               ))}
             </HTMLFlipBook>
-          </div>
+          )}
         </div>
 
         <button

@@ -52,6 +52,8 @@ export const SOCIAL_LINKS = {
   youtube: "https://www.youtube.com/@jagsamvad",
   instagram: "https://www.instagram.com/jagsamvad",
   facebook: "https://www.facebook.com/profile.php?id=61573436353502",
+  telegram: "https://t.me/jagsamvad",
+  whatsapp: "https://whatsapp.com/channel/0029Vb8BKRk8qIzx3Jck3i1Y",
 };
 
 export const SITE_URL =

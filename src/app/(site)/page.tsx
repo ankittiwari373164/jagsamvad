@@ -87,7 +87,7 @@ export default async function HomePage() {
           </div>
 
           {/* Right column */}
-          <aside className="space-y-8">
+          <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
             {trending.length > 0 && (
               <div>
                 <h2 className="eyebrow text-xs text-masthead font-bold border-b hairline pb-2 mb-4">
