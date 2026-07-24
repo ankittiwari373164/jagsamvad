@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
+import { calculateSeoScore } from "@/lib/seo-score";
 
 export type ArticleFormState = { status: "idle" | "error"; message?: string };
 
@@ -39,9 +40,11 @@ export async function createArticle(
 
   const supabase = await createClient();
   const publishing = payload.status === "published";
+  const { score } = calculateSeoScore(payload);
 
   const { error } = await supabase.from("articles").insert({
     ...payload,
+    seo_score: score,
     published_at: publishing ? new Date().toISOString() : null,
   });
 
@@ -72,11 +75,13 @@ export async function updateArticle(
 
   const publishing = payload.status === "published";
   const wasPublished = existing?.status === "published";
+  const { score } = calculateSeoScore(payload);
 
   const { error } = await supabase
     .from("articles")
     .update({
       ...payload,
+      seo_score: score,
       published_at: publishing
         ? existing?.published_at && wasPublished
           ? existing.published_at

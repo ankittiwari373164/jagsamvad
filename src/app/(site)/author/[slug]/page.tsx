@@ -43,6 +43,7 @@ export default async function AuthorPage({ params }: Props) {
     name: author.name,
     description: author.bio ?? undefined,
     url: `${SITE_URL}/author/${author.slug}`,
+    sameAs: author.linkedin_url ? [author.linkedin_url] : undefined,
   };
 
   return (
@@ -66,6 +67,16 @@ export default async function AuthorPage({ params }: Props) {
           <span className="eyebrow text-xs text-masthead font-bold">Author</span>
           <h1 className="font-display text-3xl font-black mt-1">{author.name}</h1>
           {author.bio && <p className="text-ink-soft mt-2 max-w-2xl">{author.bio}</p>}
+          {author.linkedin_url && (
+            <a
+              href={author.linkedin_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-3 text-sm font-semibold text-[#0A66C2] hover:underline"
+            >
+              View LinkedIn Profile →
+            </a>
+          )}
         </div>
       </header>
 

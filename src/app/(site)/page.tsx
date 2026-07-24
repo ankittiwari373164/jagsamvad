@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getPublishedArticles } from "@/lib/data";
+import { getPublishedArticles, getMostViewedArticles } from "@/lib/data";
 import ArticleCard from "@/components/ArticleCard";
 import MarqueeTicker from "@/components/MarqueeTicker";
+import TopStoriesSlider from "@/components/TopStoriesSlider";
 import EditorsPickCarousel from "@/components/EditorsPickCarousel";
 import SidebarQuickLinks from "@/components/SidebarQuickLinks";
 import NewsletterForm from "@/components/NewsletterForm";
@@ -35,12 +36,14 @@ export default async function HomePage() {
     );
   }
 
+  const mostViewed = await getMostViewedArticles(5);
   const ticker = articles.slice(0, 5).map((a) => ({ title: a.title, slug: a.slug }));
   const lead = articles[0];
   const trending = articles.slice(1, 5);
   const entertainment = articles.slice(5, 8);
   const editorsPick = articles.slice(8, 11);
   const latestNews = articles.slice(11, 15);
+  const topStories = articles.slice(0, 5);
 
   return (
     <div>
@@ -50,6 +53,8 @@ export default async function HomePage() {
       <MarqueeTicker items={ticker} />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
+        <TopStoriesSlider articles={topStories} />
+
         {/* One continuous 2-column layout: left = Lead, Entertainment, Latest
             News stacked; right = Trending, Editor's Pick, Quick Links,
             Newsletter stacked. Both columns just grow with their own
@@ -69,6 +74,36 @@ export default async function HomePage() {
                     <ArticleCard key={a.id} article={a} size="regular" />
                   ))}
                 </div>
+              </div>
+            )}
+
+            {mostViewed.length > 0 && (
+              <div className="pt-10 border-t hairline-strong">
+                <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
+                  <h2 className="font-display text-2xl font-bold">Most Viewed</h2>
+                </div>
+                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
+                  {mostViewed.map((a, i) => (
+                    <li key={a.id} className="flex items-start gap-3">
+                      <span className="font-display text-3xl font-black text-masthead/60 leading-none w-8 shrink-0">
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        {a.category && (
+                          <span className="eyebrow text-[10px] text-masthead font-bold">{a.category.name}</span>
+                        )}
+                        <h3 className="font-display text-base font-bold leading-snug mt-0.5">
+                          <Link href={`/article/${a.slug}`} className="hover:underline">
+                            {a.title}
+                          </Link>
+                        </h3>
+                        <p className="text-xs text-ink-soft mt-1">
+                          {a.views.toLocaleString("en-IN")} views
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </div>
             )}
 

@@ -1,14 +1,22 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate } from "@/lib/utils";
-import { PenSquare } from "lucide-react";
+import { PenSquare, Eye } from "lucide-react";
 import ArticleRowActions from "@/components/admin/ArticleRowActions";
+
+function seoScoreColor(score: number): string {
+  if (score >= 80) return "bg-emerald-50 text-emerald-700";
+  if (score >= 50) return "bg-amber-50 text-amber-700";
+  return "bg-red-50 text-red-700";
+}
 
 export default async function AdminArticlesPage() {
   const supabase = await createClient();
   const { data: articles } = await supabase
     .from("articles")
-    .select("id, title, slug, status, published_at, updated_at, category:categories(name)")
+    .select(
+      "id, title, slug, status, published_at, updated_at, views, seo_score, category:categories(name)"
+    )
     .order("updated_at", { ascending: false });
 
   return (
@@ -28,12 +36,14 @@ export default async function AdminArticlesPage() {
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
-        <table className="w-full text-sm min-w-[720px]">
+        <table className="w-full text-sm min-w-[860px]">
           <thead>
             <tr className="border-b border-slate-200 text-left bg-slate-50">
               <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Title</th>
               <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Category</th>
               <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
+              <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Views</th>
+              <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">SEO</th>
               <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Updated</th>
               <th className="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">Actions</th>
             </tr>
@@ -57,6 +67,17 @@ export default async function AdminArticlesPage() {
                       {a.status}
                     </span>
                   </td>
+                  <td className="px-5 py-3.5 text-slate-600">
+                    <span className="flex items-center gap-1.5">
+                      <Eye size={13} className="text-slate-400" />
+                      {(a.views ?? 0).toLocaleString("en-IN")}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${seoScoreColor(a.seo_score ?? 0)}`}>
+                      {a.seo_score ?? 0}/100
+                    </span>
+                  </td>
                   <td className="px-5 py-3.5 text-slate-500">{formatDate(a.updated_at)}</td>
                   <td className="px-5 py-3.5">
                     <ArticleRowActions id={a.id} slug={a.slug} status={a.status} />
@@ -65,7 +86,7 @@ export default async function AdminArticlesPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="px-5 py-10 text-center text-slate-500">
+                <td colSpan={7} className="px-5 py-10 text-center text-slate-500">
                   No articles yet — create your first story.
                 </td>
               </tr>

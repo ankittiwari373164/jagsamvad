@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Newspaper, FolderOpen, Users, LogOut, ExternalLink } from "lucide-react";
+import { LayoutDashboard, Newspaper, FolderOpen, Users, LogOut, ExternalLink, TrendingUp } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 
 const links = [
@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/articles", label: "Articles", icon: Newspaper },
   { href: "/admin/categories", label: "Categories", icon: FolderOpen },
   { href: "/admin/authors", label: "Authors", icon: Users },
+  { href: "/admin/seo", label: "SEO Automation", icon: TrendingUp },
 ];
 
 export default function AdminSidebar({ email }: { email: string }) {

@@ -59,6 +59,12 @@ function AuthorFormFields({
           className={inputClass}
         />
       </div>
+      <input
+        name="linkedin_url"
+        defaultValue={author?.linkedin_url ?? ""}
+        placeholder="LinkedIn URL (optional)"
+        className={inputClass}
+      />
       <button
         type="submit"
         disabled={pending}

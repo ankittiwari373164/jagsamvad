@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --color-paper: #f3eee1;
-  --color-paper-dim: #eae3d2;
+  --color-paper: #ffffff;
+  --color-paper-dim: #f5f4f1;
   --color-ink: #201e1a;
   --color-ink-soft: #4a453c;
   --color-masthead: #8f1d2c;
@@ -27,6 +27,7 @@
   --font-body: var(--font-lora), Georgia, serif;
   --font-mono: var(--font-typewriter), monospace;
   --font-admin: var(--font-admin), ui-sans-serif, system-ui, sans-serif;
+  --font-yatra: var(--font-yatra), "Noto Sans Devanagari", sans-serif;
 }
 
 body {
@@ -187,6 +188,22 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Newspaper-opening loading animation */
+@keyframes newspaper-open {
+  0% {
+    transform: scaleX(0.08) rotateY(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scaleX(1) rotateY(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.08) rotateY(0deg);
+    opacity: 0.35;
   }
 }
 

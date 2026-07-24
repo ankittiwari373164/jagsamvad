@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { getCategories } from "@/lib/data";
 import { SOCIAL_LINKS } from "@/lib/types";
-import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon } from "@/components/SocialIcons";
+import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon, TelegramIcon, WhatsappIcon } from "@/components/SocialIcons";
 
 const legalLinks = [
   { href: "/about", label: "About Us" },
@@ -30,6 +30,12 @@ export default async function Footer() {
             Korean and everything in between.
           </p>
           <div className="flex items-center gap-4 mt-4 text-paper/80">
+            <a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="hover:text-gold transition-colors">
+              <TelegramIcon size={16} />
+            </a>
+            <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="hover:text-gold transition-colors">
+              <WhatsappIcon size={16} />
+            </a>
             <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-gold transition-colors">
               <FacebookIcon size={16} />
             </a>
@@ -76,7 +82,7 @@ export default async function Footer() {
 
         <div>
           <h3 className="eyebrow text-xs text-gold mb-3">Contact Us</h3>
-          <ul className="space-y-2 text-sm text-paper/80">
+          <ul className="space-y-2 text-sm text-paper/80 mb-4">
             <li>
               Email:{" "}
               <a href="mailto:editor@jagsamvad.com" className="hover:text-gold transition-colors">
@@ -85,6 +91,26 @@ export default async function Footer() {
             </li>
             <li>New Delhi, India</li>
           </ul>
+          <div className="flex flex-col gap-2">
+            <a
+              href={SOCIAL_LINKS.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#229ED9] hover:bg-[#1c86ba] px-3 py-2 transition-colors"
+            >
+              <TelegramIcon size={13} />
+              Telegram Channel
+            </a>
+            <a
+              href={SOCIAL_LINKS.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#25D366] hover:bg-[#1fb457] px-3 py-2 transition-colors"
+            >
+              <WhatsappIcon size={13} />
+              WhatsApp Channel
+            </a>
+          </div>
         </div>
       </div>
 

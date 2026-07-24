@@ -24,12 +24,24 @@ export default function AuthorCard({ author }: { author: Author }) {
       {author.bio && (
         <p className="text-xs text-ink-soft leading-relaxed line-clamp-3 mb-3">{author.bio}</p>
       )}
-      <Link
-        href={`/author/${author.slug}`}
-        className="text-xs font-semibold text-masthead hover:underline"
-      >
-        Full Profile →
-      </Link>
+      <div className="flex items-center gap-4">
+        <Link
+          href={`/author/${author.slug}`}
+          className="text-xs font-semibold text-masthead hover:underline"
+        >
+          Full Profile →
+        </Link>
+        {author.linkedin_url && (
+          <a
+            href={author.linkedin_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-semibold text-[#0A66C2] hover:underline"
+          >
+            LinkedIn
+          </a>
+        )}
+      </div>
     </div>
   );
 }

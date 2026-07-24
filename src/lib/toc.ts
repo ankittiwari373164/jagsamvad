@@ -83,7 +83,7 @@ function escapeHtml(str: string): string {
 /**
  * Renders a Table of Contents as a raw HTML string (with the `.toc-box`
  * styling defined in globals.css). Used for contexts that can't render a
- * React component inline — namely the flip-book print edition, which
+ * React component inline — namely the flip-book newspaper reader, which
  * paginates raw HTML strings.
  */
 export function renderTocHtml(toc: TocItem[]): string {

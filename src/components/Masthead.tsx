@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
 import { getCategories } from "@/lib/data";
 import { SITE_LOCATION, SITE_TAGLINE, SOCIAL_LINKS } from "@/lib/types";
 import MobileNav from "@/components/MobileNav";
-import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon } from "@/components/SocialIcons";
+import SearchBox from "@/components/SearchBox";
+import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon, TelegramIcon, WhatsappIcon } from "@/components/SocialIcons";
 
 export default async function Masthead() {
   const categories = await getCategories();
@@ -18,7 +18,7 @@ export default async function Masthead() {
     .toUpperCase();
 
   return (
-    <header className="bg-paper border-b-4 border-double border-ink hairline-strong sticky top-0 z-40 paper-texture">
+    <header className="bg-paper border-b border-slate-200 shadow-sm sticky top-0 z-40">
       {/* Utility bar */}
       <div className="hidden sm:flex items-center justify-between max-w-6xl mx-auto px-4 py-1.5 text-[11px] eyebrow text-ink-soft border-b hairline">
         <span>
@@ -32,6 +32,12 @@ export default async function Masthead() {
             </Link>
           </nav>
           <div className="flex items-center gap-3 text-ink-soft border-l hairline pl-4">
+            <a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="hover:text-[#229ED9] transition-colors">
+              <TelegramIcon size={14} />
+            </a>
+            <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="hover:text-[#25D366] transition-colors">
+              <WhatsappIcon size={14} />
+            </a>
             <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-masthead transition-colors">
               <FacebookIcon size={13} />
             </a>
@@ -49,14 +55,14 @@ export default async function Masthead() {
       </div>
 
       {/* Main row: logo left, nav right */}
-      <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between gap-6">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <MobileNav categories={categories} />
-          <Link href="/" className="flex items-baseline gap-2">
-            <span className="font-display text-xl sm:text-2xl font-black tracking-tight text-ink">
+          <Link href="/" className="flex items-baseline gap-2.5">
+            <span className="font-[family-name:var(--font-yatra)] text-2xl sm:text-3xl text-masthead">
               जगसंवाद
             </span>
-            <span className="hidden sm:inline text-xs font-normal text-masthead">
+            <span className="hidden sm:inline font-[family-name:var(--font-yatra)] text-sm text-ink">
               JagSamvad
             </span>
           </Link>
@@ -78,13 +84,12 @@ export default async function Masthead() {
               {cat.name}
             </Link>
           ))}
-          <button
-            aria-label="Search"
-            className="text-ink hover:text-masthead transition-colors p-1 -mr-1"
-          >
-            <Search size={16} />
-          </button>
+          <SearchBox variant="desktop" />
         </nav>
+      </div>
+
+      <div className="sm:hidden px-4 pb-3">
+        <SearchBox variant="mobile" />
       </div>
 
       <p className="sm:hidden eyebrow text-[10px] text-ink-soft text-center pb-2 px-4">

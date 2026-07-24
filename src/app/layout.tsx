@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Lora, Special_Elite } from "next/font/google";
+import { Playfair_Display, Lora, Special_Elite, Yatra_One } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/types";
 
@@ -18,6 +18,12 @@ const typewriter = Special_Elite({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-typewriter",
+});
+
+const yatraOne = Yatra_One({
+  subsets: ["latin", "devanagari"],
+  weight: "400",
+  variable: "--font-yatra",
 });
 
 export const metadata: Metadata = {
@@ -88,7 +94,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${playfair.variable} ${lora.variable} ${typewriter.variable} antialiased bg-paper text-ink`}
+        className={`${playfair.variable} ${lora.variable} ${typewriter.variable} ${yatraOne.variable} antialiased bg-paper text-ink`}
       >
         <script
           type="application/ld+json"

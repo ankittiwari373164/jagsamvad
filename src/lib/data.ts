@@ -93,6 +93,17 @@ export async function getRelatedArticles(
   return (data ?? []) as unknown as ArticleWithRelations[];
 }
 
+export async function getMostViewedArticles(limit = 5): Promise<ArticleWithRelations[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("articles")
+    .select(ARTICLE_SELECT)
+    .eq("status", "published")
+    .order("views", { ascending: false })
+    .limit(limit);
+  return (data ?? []) as unknown as ArticleWithRelations[];
+}
+
 export async function getAuthorBySlug(slug: string) {
   const supabase = await createClient();
   const { data } = await supabase

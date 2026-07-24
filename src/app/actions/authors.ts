@@ -15,6 +15,7 @@ export async function createAuthor(
   const bio = String(formData.get("bio") || "").trim() || null;
   const avatar_url = String(formData.get("avatar_url") || "").trim() || null;
   const twitter_url = String(formData.get("twitter_url") || "").trim() || null;
+  const linkedin_url = String(formData.get("linkedin_url") || "").trim() || null;
 
   if (!name) return { status: "error", message: "Name is required." };
 
@@ -25,6 +26,7 @@ export async function createAuthor(
     bio,
     avatar_url,
     twitter_url,
+    linkedin_url,
   });
 
   if (error) return { status: "error", message: error.message };
@@ -43,13 +45,14 @@ export async function updateAuthor(
   const bio = String(formData.get("bio") || "").trim() || null;
   const avatar_url = String(formData.get("avatar_url") || "").trim() || null;
   const twitter_url = String(formData.get("twitter_url") || "").trim() || null;
+  const linkedin_url = String(formData.get("linkedin_url") || "").trim() || null;
 
   if (!name) return { status: "error", message: "Name is required." };
 
   const supabase = await createClient();
   const { error } = await supabase
     .from("authors")
-    .update({ name, slug: slugify(slugInput || name), bio, avatar_url, twitter_url })
+    .update({ name, slug: slugify(slugInput || name), bio, avatar_url, twitter_url, linkedin_url })
     .eq("id", id);
 
   if (error) return { status: "error", message: error.message };

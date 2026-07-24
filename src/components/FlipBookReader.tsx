@@ -175,7 +175,7 @@ export default function FlipBookReader({
   const modal = open && (
     <div className="fixed inset-0 z-[999] bg-gradient-to-b from-ink to-[#100f0d] flex flex-col items-center justify-center p-3 sm:p-8">
       <button
-        aria-label="Close print edition"
+        aria-label="Close book view"
         onClick={() => setOpen(false)}
         className="absolute top-4 right-4 text-paper hover:text-gold bg-white/10 hover:bg-white/15 rounded-full p-2 transition-colors z-10"
       >
@@ -239,7 +239,7 @@ export default function FlipBookReader({
         className="inline-flex items-center gap-2 border hairline-strong px-4 py-2 text-sm font-semibold eyebrow hover:bg-ink hover:text-paper transition-colors"
       >
         <BookOpen size={16} />
-        Read in Print Edition
+        Read in Book View
       </button>
 
       {mounted && modal ? createPortal(modal, document.body) : null}

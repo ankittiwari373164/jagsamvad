@@ -14,6 +14,7 @@ export type Author = {
   bio: string | null;
   avatar_url: string | null;
   twitter_url: string | null;
+  linkedin_url: string | null;
   created_at: string;
 };
 
@@ -34,6 +35,8 @@ export type Article = {
   meta_description: string | null;
   tags: string[];
   views: number;
+  seo_score: number;
+  last_seo_update_at: string | null;
   published_at: string | null;
   created_at: string;
   updated_at: string;
