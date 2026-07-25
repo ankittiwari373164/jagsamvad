@@ -104,6 +104,17 @@ export async function getMostViewedArticles(limit = 5): Promise<ArticleWithRelat
   return (data ?? []) as unknown as ArticleWithRelations[];
 }
 
+export async function getLinkableArticles(limit = 100): Promise<{ slug: string; title: string }[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("articles")
+    .select("slug, title")
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .limit(limit);
+  return data ?? [];
+}
+
 export async function getAuthorBySlug(slug: string) {
   const supabase = await createClient();
   const { data } = await supabase

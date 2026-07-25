@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import {
   getArticleBySlug,
   getRelatedArticles,
+  getLinkableArticles,
   incrementArticleViews,
 } from "@/lib/data";
 import ArticleCard from "@/components/ArticleCard";
@@ -15,6 +16,7 @@ import AuthorCard from "@/components/AuthorCard";
 import ShareButtons from "@/components/ShareButtons";
 import NewsletterForm from "@/components/NewsletterForm";
 import { extractTocAndAddIds, splitAtTocMarker, prepareHtmlWithToc } from "@/lib/toc";
+import { injectSmartLinks } from "@/lib/smart-links";
 import { SITE_NAME, SITE_URL } from "@/lib/types";
 import { formatDateTime, readingTime, excerptFromHtml } from "@/lib/utils";
 
@@ -74,8 +76,10 @@ export default async function ArticlePage({ params }: Props) {
   incrementArticleViews(article.id).catch(() => {});
 
   const related = await getRelatedArticles(article.category_id, article.id, 5);
+  const linkableArticles = await getLinkableArticles();
   const url = `${SITE_URL}/article/${article.slug}`;
-  const { html: contentHtml, toc } = extractTocAndAddIds(article.content);
+  const linkedContent = injectSmartLinks(article.content, article.slug, linkableArticles);
+  const { html: contentHtml, toc } = extractTocAndAddIds(linkedContent);
   const tocSplit = splitAtTocMarker(contentHtml);
   const flipbookHtml = prepareHtmlWithToc(contentHtml, toc);
 

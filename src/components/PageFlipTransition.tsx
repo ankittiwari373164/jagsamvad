@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -18,6 +19,14 @@ export default function PageFlipTransition({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+
+  // The animated transition can start playing before the browser's own
+  // scroll-restoration finishes, which is what caused pages to open
+  // "slightly scrolled". Forcing it explicitly on every route change
+  // guarantees every new page always starts at the very top.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div style={{ perspective: "1800px" }}>

@@ -39,6 +39,7 @@ import {
   Maximize2,
   Minimize2,
   FileCode2,
+  FileText,
   Superscript as SuperscriptIcon,
   Subscript as SubscriptIcon,
   TableOfContents as TocIcon,
@@ -131,13 +132,33 @@ export default function RichTextEditor({
           return;
         }
         const { data } = supabase.storage.from("article-images").getPublicUrl(path);
-        editor.chain().focus().setImage({ src: data.publicUrl }).run();
+        const alt = window.prompt(
+          "Describe this image for SEO and accessibility (alt text):",
+          ""
+        );
+        editor
+          .chain()
+          .focus()
+          .setImage({ src: data.publicUrl, alt: alt?.trim() || undefined })
+          .run();
       } finally {
         uploadingRef.current = false;
       }
     },
     [editor]
   );
+
+  const editImageAlt = () => {
+    if (!editor) return;
+    if (!editor.isActive("image")) {
+      alert("Click an image first to select it, then use this button to edit its alt text.");
+      return;
+    }
+    const current = (editor.getAttributes("image").alt as string) || "";
+    const alt = window.prompt("Alt text for this image:", current);
+    if (alt === null) return;
+    editor.chain().focus().updateAttributes("image", { alt: alt.trim() }).run();
+  };
 
   const setLink = () => {
     if (!editor) return;
@@ -256,6 +277,13 @@ export default function RichTextEditor({
         </ToolbarButton>
         <ToolbarButton label="Insert image" onClick={() => fileInputRef.current?.click()}>
           <ImageIcon size={15} />
+        </ToolbarButton>
+        <ToolbarButton
+          label="Edit alt text of selected image"
+          active={editor.isActive("image")}
+          onClick={editImageAlt}
+        >
+          <FileText size={15} />
         </ToolbarButton>
         <input
           ref={fileInputRef}

@@ -426,7 +426,7 @@ export default function ArticleForm({ categories, authors, article, action, subm
 
         <div>
           <label htmlFor="tags" className={labelClass}>
-            Tags (comma separated)
+            Tags / SEO Keywords <span className="text-slate-400 font-normal">(comma separated — add at least 3 for a full SEO score)</span>
           </label>
           <input
             id="tags"
