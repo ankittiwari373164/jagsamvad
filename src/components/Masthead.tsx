@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getCategories } from "@/lib/data";
 import { SITE_LOCATION, SITE_TAGLINE, SOCIAL_LINKS } from "@/lib/types";
 import MobileNav from "@/components/MobileNav";
@@ -58,13 +59,15 @@ export default async function Masthead() {
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <MobileNav categories={categories} />
-          <Link href="/" className="flex items-baseline gap-2.5">
-            <span className="font-[family-name:var(--font-yatra)] text-2xl sm:text-3xl text-masthead">
-              जगसंवाद
-            </span>
-            <span className="hidden sm:inline font-[family-name:var(--font-yatra)] text-sm text-ink">
-              JagSamvad
-            </span>
+          <Link href="/" className="flex items-center shrink-0">
+            <Image
+              src="/wordmark-logo.png"
+              alt="Jagsamvad"
+              width={2000}
+              height={522}
+              priority
+              className="h-8 sm:h-10 w-auto"
+            />
           </Link>
         </div>
 

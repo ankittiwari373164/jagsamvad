@@ -77,33 +77,12 @@ export default async function HomePage() {
               </div>
             )}
 
-            {mostViewed.length > 0 && (
+            {editorsPick.length > 0 && (
               <div className="pt-10 border-t hairline-strong">
                 <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
-                  <h2 className="font-display text-2xl font-bold">Most Viewed</h2>
+                  <h2 className="font-display text-2xl font-bold">Editor&rsquo;s Pick</h2>
                 </div>
-                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-                  {mostViewed.map((a, i) => (
-                    <li key={a.id} className="flex items-start gap-3">
-                      <span className="font-display text-3xl font-black text-masthead/60 leading-none w-8 shrink-0">
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0">
-                        {a.category && (
-                          <span className="eyebrow text-[10px] text-masthead font-bold">{a.category.name}</span>
-                        )}
-                        <h3 className="font-display text-base font-bold leading-snug mt-0.5">
-                          <Link href={`/article/${a.slug}`} className="hover:underline">
-                            {a.title}
-                          </Link>
-                        </h3>
-                        <p className="text-xs text-ink-soft mt-1">
-                          {a.views.toLocaleString("en-IN")} views
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
+                <EditorsPickCarousel articles={editorsPick} />
               </div>
             )}
 
@@ -162,7 +141,33 @@ export default async function HomePage() {
               </div>
             )}
 
-            <EditorsPickCarousel articles={editorsPick} />
+            {mostViewed.length > 0 && (
+              <div>
+                <h2 className="eyebrow text-xs text-masthead font-bold border-b hairline pb-2 mb-4">
+                  Most Viewed
+                </h2>
+                <ol className="space-y-4">
+                  {mostViewed.map((a, i) => (
+                    <li key={a.id} className="flex items-start gap-3">
+                      <span className="font-display text-2xl font-black text-masthead/70 leading-none w-6 shrink-0">
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        {a.category && (
+                          <span className="eyebrow text-[10px] text-masthead font-bold">{a.category.name}</span>
+                        )}
+                        <h3 className="font-display text-sm font-bold leading-snug mt-0.5">
+                          <Link href={`/article/${a.slug}`} className="hover:underline">
+                            {a.title}
+                          </Link>
+                        </h3>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
             <SidebarQuickLinks />
             <NewsletterForm />
           </aside>

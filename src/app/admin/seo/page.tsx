@@ -1,29 +1,76 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatDateTime } from "@/lib/utils";
 import RunAutomationButton from "@/components/admin/RunAutomationButton";
-import { Sparkles, Clock } from "lucide-react";
+import { Sparkles, Clock, AlertTriangle } from "lucide-react";
 
 export default async function AdminSeoPage() {
   const supabase = await createClient();
 
-  const [{ data: lastRun }, { data: recentRuns }, { data: keywords }] = await Promise.all([
-    supabase
-      .from("seo_automation_runs")
-      .select("*")
-      .order("run_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabase
-      .from("seo_automation_runs")
-      .select("*")
-      .order("run_at", { ascending: false })
-      .limit(10),
-    supabase
-      .from("trending_keywords")
-      .select("keyword, score, fetched_at")
-      .order("fetched_at", { ascending: false })
-      .limit(20),
-  ]);
+  let lastRun: { run_at: string; articles_updated: number } | null = null;
+  let recentRuns: { id: string; run_at: string; articles_updated: number; keywords_used: string[] }[] = [];
+  let keywords: { keyword: string; score: number; fetched_at: string }[] = [];
+  let setupError: string | null = null;
+
+  try {
+    const [lastRunRes, recentRunsRes, keywordsRes] = await Promise.all([
+      supabase
+        .from("seo_automation_runs")
+        .select("*")
+        .order("run_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+      supabase
+        .from("seo_automation_runs")
+        .select("*")
+        .order("run_at", { ascending: false })
+        .limit(10),
+      supabase
+        .from("trending_keywords")
+        .select("keyword, score, fetched_at")
+        .order("fetched_at", { ascending: false })
+        .limit(20),
+    ]);
+
+    if (lastRunRes.error && lastRunRes.error.code !== "PGRST116") throw lastRunRes.error;
+    if (recentRunsRes.error) throw recentRunsRes.error;
+    if (keywordsRes.error) throw keywordsRes.error;
+
+    lastRun = lastRunRes.data;
+    recentRuns = recentRunsRes.data ?? [];
+    keywords = keywordsRes.data ?? [];
+  } catch (err) {
+    setupError =
+      err instanceof Error
+        ? err.message
+        : "Could not load SEO automation data.";
+  }
+
+  if (setupError) {
+    return (
+      <div className="p-8 max-w-2xl">
+        <h1 className="text-2xl font-bold text-slate-900 mb-6">SEO Automation</h1>
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 flex gap-4">
+          <AlertTriangle size={20} className="text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-amber-900 mb-2">
+              This feature isn&rsquo;t set up yet.
+            </p>
+            <p className="text-sm text-amber-800 mb-3">
+              This page needs the <code className="bg-amber-100 px-1 rounded">trending_keywords</code> and{" "}
+              <code className="bg-amber-100 px-1 rounded">seo_automation_runs</code> tables, which are created
+              by a database migration — and the automation itself needs a{" "}
+              <code className="bg-amber-100 px-1 rounded">SUPABASE_SERVICE_ROLE_KEY</code> environment variable
+              set in Vercel. If you&rsquo;ve done both already and still see this, double-check the key is set
+              for the <strong>Production</strong> environment specifically, then redeploy.
+            </p>
+            <p className="text-xs text-amber-700 font-mono bg-amber-100/60 rounded p-2 break-all">
+              {setupError}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // This is an async Server Component computed once per request, not a
   // client re-render — the "impure during render" concern this lint rule

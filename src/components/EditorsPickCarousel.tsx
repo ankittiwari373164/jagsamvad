@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { ArticleWithRelations } from "@/lib/types";
+import { formatDate, readingTime } from "@/lib/utils";
 
 export default function EditorsPickCarousel({
   articles,
@@ -24,38 +25,53 @@ export default function EditorsPickCarousel({
 
   return (
     <div>
-      <h2 className="eyebrow text-xs text-masthead font-bold border-b hairline pb-2 mb-4">
-        Editor&rsquo;s Pick
-      </h2>
-      <article>
+      <article className="flex flex-col sm:flex-row gap-6">
         {article.cover_image_url && (
-          <Link href={href} className="block relative aspect-[4/3] border hairline-strong overflow-hidden mb-3">
+          <Link
+            href={href}
+            className="relative w-full sm:w-2/5 aspect-[16/10] shrink-0 border hairline-strong overflow-hidden"
+          >
             <Image
               src={article.cover_image_url}
               alt={article.title}
               fill
-              sizes="320px"
+              sizes="(max-width: 640px) 100vw, 360px"
               className="object-cover"
             />
           </Link>
         )}
-        <h3 className="font-display text-lg font-bold leading-snug mb-2">
-          <Link href={href} className="hover:underline">
-            {article.title}
-          </Link>
-        </h3>
-        {article.excerpt && (
-          <p className="text-sm text-ink-soft leading-relaxed mb-2 line-clamp-2">
-            {article.excerpt}
-          </p>
-        )}
-        <Link href={href} className="text-sm font-semibold text-masthead hover:underline">
-          Read More →
-        </Link>
+        <div className="min-w-0">
+          {article.category && (
+            <Link
+              href={`/category/${article.category.slug}`}
+              className="eyebrow text-xs text-masthead font-bold hover:underline"
+            >
+              {article.category.name}
+            </Link>
+          )}
+          <h3 className="font-display text-xl sm:text-2xl font-bold leading-snug mt-1.5 mb-2">
+            <Link href={href} className="hover:underline">
+              {article.title}
+            </Link>
+          </h3>
+          {article.excerpt && (
+            <p className="text-sm text-ink-soft leading-relaxed mb-3 line-clamp-3">
+              {article.excerpt}
+            </p>
+          )}
+          <div className="flex items-center justify-between gap-3">
+            <Link href={href} className="text-sm font-semibold text-masthead hover:underline">
+              Read More →
+            </Link>
+            <p className="eyebrow text-[10px] text-ink-soft whitespace-nowrap">
+              {formatDate(article.published_at)} · {readingTime(article.content)} min read
+            </p>
+          </div>
+        </div>
       </article>
 
       {articles.length > 1 && (
-        <div className="flex items-center gap-2 mt-4">
+        <div className="flex items-center gap-2 mt-5">
           {articles.map((a, i) => (
             <button
               key={a.id}

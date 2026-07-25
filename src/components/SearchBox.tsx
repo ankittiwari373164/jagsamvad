@@ -22,7 +22,7 @@ export default function SearchBox({ variant = "desktop" }: { variant?: "desktop"
       <button
         aria-label="Search"
         onClick={() => setOpen(true)}
-        className="text-paper hover:text-gold transition-colors p-2 -mr-2 shrink-0"
+        className="text-ink hover:text-masthead transition-colors p-2 -mr-2 shrink-0"
       >
         <Search size={16} />
       </button>
@@ -52,7 +52,7 @@ export default function SearchBox({ variant = "desktop" }: { variant?: "desktop"
             setOpen(false);
             setValue("");
           }}
-          className="text-paper hover:text-gold transition-colors p-1"
+          className="text-ink hover:text-masthead transition-colors p-1"
         >
           <X size={16} />
         </button>
