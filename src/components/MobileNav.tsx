@@ -25,8 +25,7 @@ export default function MobileNav({ categories }: { categories: Category[] }) {
             className="absolute left-0 top-0 h-full w-72 bg-paper border-r hairline-strong p-5 flex flex-col gap-1"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-display text-xl font-bold">जगसंवाद</span>
+            <div className="flex items-center justify-end mb-4">
               <button aria-label="Close menu" onClick={() => setOpen(false)} className="p-1">
                 <X size={20} />
               </button>

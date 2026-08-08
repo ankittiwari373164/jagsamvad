@@ -4,6 +4,7 @@ import { getCategories } from "@/lib/data";
 import { SITE_LOCATION, SITE_TAGLINE, SOCIAL_LINKS } from "@/lib/types";
 import MobileNav from "@/components/MobileNav";
 import SearchBox from "@/components/SearchBox";
+import MobileSearchTrigger from "@/components/MobileSearchTrigger";
 import SubscribeModal from "@/components/SubscribeModal";
 import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon, TelegramIcon, WhatsappIcon } from "@/components/SocialIcons";
 
@@ -55,11 +56,11 @@ export default async function Masthead() {
         </div>
       </div>
 
-      {/* Main row: logo left, nav right */}
+      {/* Main row: desktop = logo left, nav right | mobile = hamburger left, logo center, search right */}
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 sm:flex-none flex-1">
           <MobileNav categories={categories} />
-          <Link href="/" className="flex items-center shrink-0">
+          <Link href="/" className="hidden sm:flex items-center shrink-0">
             <Image
               src="/wordmark-logo.png"
               alt="Jagsamvad"
@@ -70,6 +71,17 @@ export default async function Masthead() {
             />
           </Link>
         </div>
+
+        <Link href="/" className="flex sm:hidden items-center justify-center flex-1">
+          <Image
+            src="/wordmark-logo.png"
+            alt="Jagsamvad"
+            width={2000}
+            height={522}
+            priority
+            className="h-8 w-auto"
+          />
+        </Link>
 
         <nav className="hidden sm:flex items-center gap-6">
           <Link
@@ -90,8 +102,8 @@ export default async function Masthead() {
           <SearchBox variant="desktop" />
         </nav>
 
-        <div className="sm:hidden">
-          <SearchBox variant="mobile" />
+        <div className="flex sm:hidden flex-1 justify-end">
+          <MobileSearchTrigger />
         </div>
       </div>
 
@@ -112,10 +124,6 @@ export default async function Masthead() {
           </Link>
         ))}
       </nav>
-
-      <p className="sm:hidden eyebrow text-[10px] text-ink-soft text-center pb-2 px-4">
-        {SITE_TAGLINE}
-      </p>
     </header>
   );
 }
