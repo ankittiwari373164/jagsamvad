@@ -21,7 +21,7 @@ export default function TopStoriesSlider({ articles }: { articles: ArticleWithRe
 
   return (
     <section className="relative border hairline-strong overflow-hidden mb-10">
-      <div className="relative aspect-[4/5] sm:aspect-[2.2/1]">
+      <div className="relative aspect-[4/3] sm:aspect-[2.2/1]">
         {article.cover_image_url && (
           <Image
             src={article.cover_image_url}
