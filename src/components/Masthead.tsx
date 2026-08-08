@@ -89,11 +89,29 @@ export default async function Masthead() {
           ))}
           <SearchBox variant="desktop" />
         </nav>
+
+        <div className="sm:hidden">
+          <SearchBox variant="mobile" />
+        </div>
       </div>
 
-      <div className="sm:hidden px-4 pb-3">
-        <SearchBox variant="mobile" />
-      </div>
+      <nav className="sm:hidden flex items-center gap-5 overflow-x-auto no-scrollbar px-4 pb-2.5 border-t hairline pt-2">
+        <Link
+          href="/"
+          className="eyebrow text-xs font-semibold text-ink hover:text-masthead transition-colors whitespace-nowrap shrink-0"
+        >
+          Home
+        </Link>
+        {categories.map((cat) => (
+          <Link
+            key={cat.id}
+            href={`/category/${cat.slug}`}
+            className="eyebrow text-xs text-ink hover:text-masthead transition-colors whitespace-nowrap shrink-0"
+          >
+            {cat.name}
+          </Link>
+        ))}
+      </nav>
 
       <p className="sm:hidden eyebrow text-[10px] text-ink-soft text-center pb-2 px-4">
         {SITE_TAGLINE}
