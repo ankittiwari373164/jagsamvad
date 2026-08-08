@@ -7,11 +7,11 @@ import { SOCIAL_LINKS } from "@/lib/types";
 
 const initialState: NewsletterState = { status: "idle" };
 
-export default function NewsletterForm() {
+export default function NewsletterForm({ withAnchor = true }: { withAnchor?: boolean }) {
   const [state, formAction, pending] = useActionState(subscribeNewsletter, initialState);
 
   return (
-    <div id="subscribe" className="border hairline-strong bg-white p-5">
+    <div id={withAnchor ? "subscribe" : undefined} className="border hairline-strong bg-white p-5">
       <h2 className="eyebrow text-xs text-masthead font-bold mb-1.5">Stay Updated</h2>
       <p className="text-xs text-ink-soft mb-3 leading-relaxed">
         Subscribe to our newsletter for the latest updates delivered to your

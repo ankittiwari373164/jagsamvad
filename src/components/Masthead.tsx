@@ -4,6 +4,7 @@ import { getCategories } from "@/lib/data";
 import { SITE_LOCATION, SITE_TAGLINE, SOCIAL_LINKS } from "@/lib/types";
 import MobileNav from "@/components/MobileNav";
 import SearchBox from "@/components/SearchBox";
+import SubscribeModal from "@/components/SubscribeModal";
 import { FacebookIcon, InstagramIcon, YoutubeIcon, XIcon, TelegramIcon, WhatsappIcon } from "@/components/SocialIcons";
 
 export default async function Masthead() {
@@ -27,10 +28,9 @@ export default async function Masthead() {
         </span>
         <div className="flex items-center gap-5">
           <nav className="flex items-center gap-4">
-            <span className="text-ink font-bold">Digital Edition</span>
-            <Link href="#subscribe" className="hover:text-masthead transition-colors">
+            <SubscribeModal className="text-ink font-bold hover:text-masthead transition-colors">
               Subscribe
-            </Link>
+            </SubscribeModal>
           </nav>
           <div className="flex items-center gap-3 text-ink-soft border-l hairline pl-4">
             <a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="hover:text-[#229ED9] transition-colors">

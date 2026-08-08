@@ -1,171 +1,88 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { getPublishedArticles, getMostViewedArticles } from "@/lib/data";
-import ArticleCard from "@/components/ArticleCard";
-import MarqueeTicker from "@/components/MarqueeTicker";
-import TopStoriesSlider from "@/components/TopStoriesSlider";
-import EditorsPickCarousel from "@/components/EditorsPickCarousel";
-import SidebarQuickLinks from "@/components/SidebarQuickLinks";
-import NewsletterForm from "@/components/NewsletterForm";
-import { formatDate } from "@/lib/utils";
-import { SITE_NAME } from "@/lib/types";
-
-export const revalidate = 60;
+import { Mail, MapPin, Clock } from "lucide-react";
+import ContactForm from "@/components/ContactForm";
+import { SOCIAL_LINKS, SITE_URL } from "@/lib/types";
+import { TelegramIcon, WhatsappIcon, InstagramIcon, XIcon, FacebookIcon, YoutubeIcon } from "@/components/SocialIcons";
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} — Bollywood, Hollywood, Korean Movies & OTT News`,
-  alternates: { canonical: "/" },
+  title: "Contact Us",
+  description:
+    "Get in touch with the Jagsamvad newsroom — story tips, corrections, partnerships or general queries.",
+  alternates: { canonical: `${SITE_URL}/contact` },
 };
 
-export default async function HomePage() {
-  const articles = await getPublishedArticles({ limit: 20 });
-
-  if (articles.length === 0) {
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-24 text-center">
-        <h1 className="font-display text-3xl font-bold mb-3">
-          The presses are warming up.
-        </h1>
-        <p className="text-ink-soft">
-          No stories have been published yet. Once you publish your first
-          article from the admin panel, it will appear right here on the
-          front page.
-        </p>
-      </div>
-    );
-  }
-
-  const mostViewed = await getMostViewedArticles(5);
-  const ticker = articles.slice(0, 5).map((a) => ({ title: a.title, slug: a.slug }));
-  const lead = articles[0];
-  const trending = articles.slice(1, 5);
-  const entertainment = articles.slice(5, 8);
-  const editorsPick = articles.slice(8, 11);
-  const latestNews = articles.slice(11, 15);
-  const topStories = articles.slice(0, 5);
-
+export default function ContactPage() {
   return (
-    <div>
-      <h1 className="sr-only">
-        {SITE_NAME} — Bollywood, Hollywood, Korean Movies &amp; OTT News
-      </h1>
-      <MarqueeTicker items={ticker} />
+    <div className="max-w-5xl mx-auto px-4 py-12">
+      <span className="eyebrow text-xs text-masthead font-bold">Get in touch</span>
+      <h1 className="font-display text-4xl font-black mt-1 mb-3">Contact Us</h1>
+      <p className="text-ink-soft max-w-xl mb-10 leading-relaxed">
+        Have a story tip, a correction to flag, or a partnership enquiry?
+        Send us a message below — a real person on the Jagsamvad desk reads
+        every submission.
+      </p>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <TopStoriesSlider articles={topStories} />
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
+        <div className="md:col-span-3">
+          <div className="border hairline-strong bg-white p-6">
+            <ContactForm />
+          </div>
+        </div>
 
-        {/* One continuous 2-column layout: left = Lead, Entertainment, Latest
-            News stacked; right = Trending, Editor's Pick, Quick Links,
-            Newsletter stacked. Both columns just grow with their own
-            content — no forced row-by-row height matching between them. */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-          {/* Left column */}
-          <div className="lg:col-span-2 space-y-10">
-            <ArticleCard article={lead} size="lead" />
-
-            {entertainment.length > 0 && (
-              <div className="pt-10 border-t hairline-strong">
-                <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
-                  <h2 className="font-display text-2xl font-bold">Entertainment</h2>
+        <div className="md:col-span-2 space-y-6">
+          <div className="border hairline-strong bg-white p-6">
+            <h2 className="eyebrow text-xs text-masthead font-bold mb-4">Reach Us Directly</h2>
+            <ul className="space-y-4 text-sm">
+              <li className="flex gap-3">
+                <Mail size={16} className="text-masthead mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold">Editorial &amp; General Queries</p>
+                  <a href="mailto:editor@jagsamvad.com" className="text-ink-soft hover:text-masthead transition-colors">
+                    editor@jagsamvad.com
+                  </a>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-8">
-                  {entertainment.map((a) => (
-                    <ArticleCard key={a.id} article={a} size="regular" />
-                  ))}
+              </li>
+              <li className="flex gap-3">
+                <MapPin size={16} className="text-masthead mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold">Newsroom</p>
+                  <p className="text-ink-soft">New Delhi, India</p>
                 </div>
-              </div>
-            )}
-
-            {mostViewed.length > 0 && (
-              <div className="pt-10 border-t hairline-strong">
-                <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
-                  <h2 className="font-display text-2xl font-bold">Most Viewed</h2>
+              </li>
+              <li className="flex gap-3">
+                <Clock size={16} className="text-masthead mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold">Response Time</p>
+                  <p className="text-ink-soft">We typically reply within 2–3 business days.</p>
                 </div>
-                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-                  {mostViewed.map((a, i) => (
-                    <li key={a.id} className="flex items-start gap-3">
-                      <span className="font-display text-3xl font-black text-masthead/60 leading-none w-8 shrink-0">
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0">
-                        {a.category && (
-                          <span className="eyebrow text-[10px] text-masthead font-bold">{a.category.name}</span>
-                        )}
-                        <h3 className="font-display text-base font-bold leading-snug mt-0.5">
-                          <Link href={`/article/${a.slug}`} className="hover:underline">
-                            {a.title}
-                          </Link>
-                        </h3>
-                        <p className="text-xs text-ink-soft mt-1">
-                          {a.views.toLocaleString("en-IN")} views
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
-
-            {latestNews.length > 0 && (
-              <div className="pt-10 border-t hairline-strong">
-                <div className="flex items-center justify-between border-b hairline-strong pb-2 mb-6">
-                  <h2 className="font-display text-2xl font-bold">Latest News</h2>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                  {latestNews.map((a) => (
-                    <ArticleCard key={a.id} article={a} size="horizontal" />
-                  ))}
-                </div>
-              </div>
-            )}
+              </li>
+            </ul>
           </div>
 
-          {/* Right column */}
-          <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
-            {trending.length > 0 && (
-              <div>
-                <h2 className="eyebrow text-xs text-masthead font-bold border-b hairline pb-2 mb-4">
-                  Trending Now
-                </h2>
-                <ol className="space-y-4">
-                  {trending.map((a, i) => (
-                    <li key={a.id} className="flex items-start gap-3">
-                      <span className="font-display text-2xl font-black text-masthead/70 leading-none w-6 shrink-0">
-                        {i + 1}
-                      </span>
-                      {a.cover_image_url && (
-                        <Link
-                          href={`/article/${a.slug}`}
-                          className="relative w-16 h-16 shrink-0 border hairline overflow-hidden"
-                        >
-                          <Image
-                            src={a.cover_image_url}
-                            alt={a.title}
-                            fill
-                            sizes="64px"
-                            className="object-cover"
-                          />
-                        </Link>
-                      )}
-                      <div className="min-w-0">
-                        <h3 className="font-display text-sm font-bold leading-snug">
-                          <Link href={`/article/${a.slug}`} className="hover:underline">
-                            {a.title}
-                          </Link>
-                        </h3>
-                        <p className="text-xs text-ink-soft mt-1">{formatDate(a.published_at)}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
+          <div className="border hairline-strong bg-white p-6">
+            <h2 className="eyebrow text-xs text-masthead font-bold mb-4">Follow the Desk</h2>
+            <div className="flex flex-col gap-2">
+              <a href={SOCIAL_LINKS.telegram} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#229ED9] hover:bg-[#1c86ba] px-4 py-2.5 transition-colors">
+                <TelegramIcon size={14} /> Telegram Channel
+              </a>
+              <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 text-xs font-bold text-white bg-[#25D366] hover:bg-[#1fb457] px-4 py-2.5 transition-colors">
+                <WhatsappIcon size={14} /> WhatsApp Channel
+              </a>
+            </div>
+            <div className="flex items-center gap-4 mt-4 pt-4 border-t hairline text-ink-soft">
+              <a href={SOCIAL_LINKS.x} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-masthead transition-colors"><XIcon size={16} /></a>
+              <a href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-masthead transition-colors"><InstagramIcon size={16} /></a>
+              <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-masthead transition-colors"><FacebookIcon size={16} /></a>
+              <a href={SOCIAL_LINKS.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-masthead transition-colors"><YoutubeIcon size={17} /></a>
+            </div>
+          </div>
 
-            <EditorsPickCarousel articles={editorsPick} />
-            <SidebarQuickLinks />
-            <NewsletterForm />
-          </aside>
+          <p className="text-xs text-ink-soft leading-relaxed">
+            For copyright or takedown requests, please see our{" "}
+            <a href="/terms-and-conditions" className="text-masthead hover:underline">Terms &amp; Conditions</a>.
+            For how we handle the information you submit here, see our{" "}
+            <a href="/privacy-policy" className="text-masthead hover:underline">Privacy Policy</a>.
+          </p>
         </div>
       </div>
     </div>

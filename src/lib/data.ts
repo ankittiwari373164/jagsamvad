@@ -133,3 +133,24 @@ export async function incrementArticleViews(id: string) {
     // Non-critical — view counts simply won't tick up if the RPC is missing.
   }
 }
+
+export type Comment = {
+  id: string;
+  article_id: string;
+  name: string;
+  email: string;
+  body: string;
+  is_approved: boolean;
+  created_at: string;
+};
+
+export async function getApprovedComments(articleId: string): Promise<Comment[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("comments")
+    .select("*")
+    .eq("article_id", articleId)
+    .eq("is_approved", true)
+    .order("created_at", { ascending: false });
+  return data ?? [];
+}

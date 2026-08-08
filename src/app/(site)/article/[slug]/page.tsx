@@ -15,8 +15,10 @@ import TableOfContents from "@/components/TableOfContents";
 import AuthorCard from "@/components/AuthorCard";
 import ShareButtons from "@/components/ShareButtons";
 import NewsletterForm from "@/components/NewsletterForm";
+import Comments from "@/components/Comments";
 import { extractTocAndAddIds, splitAtTocMarker, prepareHtmlWithToc } from "@/lib/toc";
 import { injectSmartLinks } from "@/lib/smart-links";
+import { getApprovedComments } from "@/lib/data";
 import { SITE_NAME, SITE_URL } from "@/lib/types";
 import { formatDateTime, readingTime, excerptFromHtml } from "@/lib/utils";
 
@@ -76,6 +78,7 @@ export default async function ArticlePage({ params }: Props) {
   incrementArticleViews(article.id).catch(() => {});
 
   const related = await getRelatedArticles(article.category_id, article.id, 5);
+  const comments = await getApprovedComments(article.id);
   const linkableArticles = await getLinkableArticles();
   const url = `${SITE_URL}/article/${article.slug}`;
   const linkedContent = injectSmartLinks(article.content, article.slug, linkableArticles);
@@ -260,6 +263,8 @@ export default async function ArticlePage({ params }: Props) {
               .
             </p>
           </div>
+
+          <Comments articleId={article.id} articleSlug={article.slug} comments={comments} />
         </article>
 
         {/* Sidebar */}
