@@ -38,7 +38,7 @@ export default function MobileSearchTrigger() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex-1">
-              <SearchBox variant="mobile" autoFocus />
+              <SearchBox variant="mobile" />
             </div>
             <button
               aria-label="Close search"
