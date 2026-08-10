@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Playfair_Display, Lora, Special_Elite, Yatra_One } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/types";
@@ -96,6 +97,14 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8626192603675744"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body
         className={`${playfair.variable} ${lora.variable} ${typewriter.variable} ${yatraOne.variable} antialiased bg-paper text-ink`}
       >
